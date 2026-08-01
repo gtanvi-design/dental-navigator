@@ -159,6 +159,9 @@
     color:var(--teal); background:#EAF5F0; padding:3px 8px; border-radius:5px; white-space:nowrap; }
   .dir-item h4{margin:2px 0 4px; font-family:var(--display); font-size:1rem; font-weight:700;}
   .dir-item .addr{font-size:.85rem; color:var(--ink-soft); margin:0 0 6px;}
+  .dir-item .website-link{font-size:.82rem; margin:0 0 8px; display:inline-block;}
+  .dir-item .services{font-size:.82rem; color:var(--ink-soft); margin:6px 0 0;}
+  .dir-item .services b{color:var(--ink); font-family:var(--mono); font-weight:600;}
   .dir-item .meta{display:flex; gap:14px; flex-wrap:wrap; font-size:.8rem; color:var(--ink-soft);}
   .dir-item .meta b{color:var(--ink); font-family:var(--mono); font-weight:600;}
   .dir-item .phone{font-family:var(--mono); font-weight:600; font-size:.92rem; text-align:right;}
@@ -191,8 +194,9 @@
 <nav class="tabnav">
   <div class="tabnav-inner">
     <button class="tab-btn active" data-tab="howto"><span class="n">01</span> How to Use This Guide</button>
-    <button class="tab-btn" data-tab="bysite"><span class="n">02</span> Find by Site</button>
-    <button class="tab-btn" data-tab="directory"><span class="n">03</span> Full Directory</button>
+    <button class="tab-btn" data-tab="oralinfo"><span class="n">02</span> Oral Health Info</button>
+    <button class="tab-btn" data-tab="bysite"><span class="n">03</span> Find by Site</button>
+    <button class="tab-btn" data-tab="directory"><span class="n">04</span> Full Directory</button>
   </div>
 </nav>
 
@@ -254,10 +258,24 @@
     <div class="insurance-box">
       <p>This guide does not cover insurance eligibility and options in depth. Below is a good starting place, or contact your site coordinator.</p>
       <p><a href="https://unlockmybenefits.org" target="_blank" rel="noopener">Unlock My Benefits</a> is a free online tool that helps Harris County residents determine their eligibility for public benefits, including Medicaid, CHIP, SNAP, WIC, Harris Health Financial Assistance, and other support services. You can also speak with a Benefits Navigator by phone.</p>
+      <p><b>Harris County Gold Card</b> is now called the <a href="https://www.harrishealth.org/access-care/patient-eligibility" target="_blank" rel="noopener">Harris Health Financial Assistance Program</a> — free or reduced-cost care for Harris County residents at or below 150% of the Federal Poverty Level. Apply online, by mail, or in person at a Harris Health location. Questions? Call the Eligibility Call Center at <b>713-566-6509</b> (M–F, 8am–4pm).</p>
     </div>
 
-    <h3 class="subhead">General oral health information</h3>
-    <p class="section-desc" style="margin-top:-4px;">Simple, evidence-based tips to help keep your teeth and gums healthy and reduce your risk of cavities and gum disease.</p>
+    <h3 class="subhead">Glossary of dental terms</h3>
+    <p class="section-desc" style="margin-top:-4px;">Plain-language explanations of terms you might see on a clinic's website or hear at an appointment.</p>
+    <div id="glossaryList" class="tips-grid"></div>
+  </section>
+
+  <section class="wrap" style="padding-top:0;">
+    <div class="section-head"><h2>Common questions</h2></div>
+    <div id="faqList"></div>
+  </section>
+</div>
+
+<div class="tabpanel" id="tab-oralinfo">
+  <section class="wrap">
+    <div class="section-head"><h2>General oral health information</h2></div>
+    <p class="section-desc">Simple, evidence-based tips to help keep your teeth and gums healthy and reduce your risk of cavities and gum disease.</p>
     <div class="tips-grid">
       <div class="tip"><span class="emoji">🪥</span><span class="t">Brush twice a day</span><p>Brush for 2 minutes each time using a soft-bristled toothbrush.</p></div>
       <div class="tip"><span class="emoji">🦷</span><span class="t">Use fluoride toothpaste</span><p>Helps strengthen tooth enamel and prevent cavities.</p></div>
@@ -268,11 +286,6 @@
       <div class="tip"><span class="emoji">💧</span><span class="t">Drink plenty of water</span><p>Rinses away food particles and supports healthy teeth and gums.</p></div>
       <div class="tip"><span class="emoji">🚭</span><span class="t">Avoid tobacco products</span><p>Smoking and other tobacco use increase risk of gum disease and tooth loss.</p></div>
     </div>
-  </section>
-
-  <section class="wrap" style="padding-top:0;">
-    <div class="section-head"><h2>Common questions</h2></div>
-    <div id="faqList"></div>
   </section>
 </div>
 
@@ -358,7 +371,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 const initialHash = location.hash.replace('#','');
-if(['howto','bysite','directory'].includes(initialHash)){
+if(['howto','oralinfo','bysite','directory'].includes(initialHash)){
   document.querySelector(`.tab-btn[data-tab="${initialHash}"]`).click();
 }
 
@@ -492,8 +505,31 @@ function buildFaq(){
     faqList.appendChild(div);
   });
 }
-// FAQ content is static and doesn't depend on the Google Sheet, so build it
-// immediately rather than waiting on (or failing alongside) the sheet fetch.
+const GLOSSARY = [
+  ["Cleaning (Prophylaxis)", "Routine removal of plaque and tartar to prevent cavities and gum disease. Usually done every 6 months."],
+  ["Filling (Restoration)", "Repairing a cavity by removing the decayed part of a tooth and filling the space."],
+  ["Extraction", "Removing a tooth completely, usually because it's too damaged or infected to save."],
+  ["Root Canal (Endodontics)", "Treating an infected tooth's inner nerve to save the tooth instead of extracting it."],
+  ["Crown", "A cap placed over a damaged or weakened tooth to protect and strengthen it."],
+  ["Dentures (Prosthodontics)", "Removable or fixed replacements for missing teeth \u2014 partial (some teeth) or full (all teeth)."],
+  ["Periodontics", "Treatment of the gums and bone that support your teeth, including gum disease."],
+  ["Oral Surgery", "Surgical procedures in the mouth \u2014 extractions, wisdom teeth, or treating injuries."],
+  ["Pediatric Dentistry", "Dental care focused on infants, children, and teens."],
+  ["Sealants", "A thin protective coating on the chewing surfaces of back teeth to prevent cavities."],
+  ["Sliding Fee Scale", "A pricing system where your cost is based on your income \u2014 the less you earn, the less you pay."],
+  ["FQHC", "Federally Qualified Health Center \u2014 a community clinic that accepts everyone regardless of ability to pay."],
+];
+function buildGlossary(){
+  const list = document.getElementById('glossaryList');
+  if(!list) return;
+  GLOSSARY.forEach(([term, def]) => {
+    const div = document.createElement('div');
+    div.className = 'tip';
+    div.innerHTML = `<span class="t">${term}</span><p>${def}</p>`;
+    list.appendChild(div);
+  });
+}
+buildGlossary();
 buildFaq();
 
 function buildDirectoryControls(){
@@ -510,6 +546,14 @@ function buildDirectoryControls(){
   catSel.addEventListener('change', renderDirectory);
 }
 
+function websiteLink(raw){
+  if (!raw || /not listed|call to confirm/i.test(raw)) return '';
+  const first = raw.split(/[\s,\/]+/)[0].trim();
+  if (!first) return '';
+  const href = first.startsWith('http') ? first : `https://${first}`;
+  return `<a class="website-link" href="${href}" target="_blank" rel="noopener">${first} \u2197</a><br>`;
+}
+
 function renderDirectory(){
   const q = document.getElementById('dirSearch').value.toLowerCase();
   const reg = document.getElementById('dirRegion').value;
@@ -524,17 +568,20 @@ function renderDirectory(){
   }).forEach(r => {
     const div = document.createElement('div');
     div.className = 'dir-item';
+    const hasServices = r.Services && !/not listed/i.test(r.Services);
     div.innerHTML = `
       <div>
         <span class="region-tag">${r.Region || r.Category ||''}</span>
         <h4>${r.Name}</h4>
         <p class="addr">${r.Address||''}</p>
+        ${websiteLink(r.Website)}
         <div class="meta">
           <span><b>Hours</b> ${r.Hours||'Call to confirm'}</span>
-          <span><b>Medicaid/CHIP</b> ${r.Medicaid_CHIP||'—'}</span>
-          <span><b>Sliding fee</b> ${r.Sliding_Fee||'—'}</span>
-          <span><b>Languages</b> ${r.Languages||'—'}</span>
+          <span><b>Medicaid/CHIP</b> ${r.Medicaid_CHIP||'\u2014'}</span>
+          <span><b>Sliding fee</b> ${r.Sliding_Fee||'\u2014'}</span>
+          <span><b>Languages</b> ${r.Languages||'\u2014'}</span>
         </div>
+        ${hasServices ? `<div class="services"><b>Services:</b> ${r.Services}</div>` : ''}
       </div>
       <div class="phone">${r.Phone||''}</div>
       ${r.Notes ? `<div class="notes">${r.Notes}</div>` : ''}`;
